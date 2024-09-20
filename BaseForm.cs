@@ -35,11 +35,6 @@ namespace PaperTracker
 
                 if (formType == "todo")
                 {
-                    checkableBtnItem checkBtn = new checkableBtnItem(name, onSelectMode);
-                    flowItemsLayoutPanel.Controls.Add(checkBtn);
-                }
-                else
-                {
                     if (todoStates != null)
                     {
                         checkableBtnItem checkBtn;
@@ -53,6 +48,11 @@ namespace PaperTracker
                         }
                         flowItemsLayoutPanel.Controls.Add(checkBtn);
                     }
+                }
+                else
+                {
+                    checkableBtnItem checkBtn = new checkableBtnItem(name, onSelectMode);
+                    flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
         }
