@@ -17,10 +17,10 @@ namespace PaperTracker
         private string formType;
         private bool onSelectMode = false;
 
-        public BaseForm(List<string> elementNames, string frmType = "default", List<bool>? elementTodoStates = null)
+        public BaseForm(List<string> frmElementNames, string frmType = "default", List<bool>? frmElementTodoStates = null)
         {
-            elementNamesList = elementNames;
-            todoStates = elementTodoStates;
+            elementNamesList = frmElementNames;
+            todoStates = frmElementTodoStates;
             formType = frmType;
 
             InitializeComponent();
