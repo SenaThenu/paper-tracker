@@ -47,7 +47,7 @@ namespace PaperTracker
             }
             else
             {
-                Console.WriteLine("Error: Invalid paper name!")
+                Console.Error.WriteLine("Error: Invalid paper name!");
             }
         }
     }

@@ -28,8 +28,15 @@ namespace PaperTracker
 
             foreach (int index in indexList)
             {
-                topics.RemoveAt(index - offset);
-                offset += 1;
+                if ((index - offset) < topics.Count)
+                {
+                    topics.RemoveAt(index - offset);
+                    offset += 1;
+                }
+                else
+                {
+                    Console.Error.WriteLine("Invalid topic index!");
+                }
             }
         }
     }
