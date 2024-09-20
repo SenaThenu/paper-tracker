@@ -29,6 +29,7 @@ namespace PaperTracker
 
         private void RenderElements()
         {
+            flowItemsLayoutPanel.Controls.Clear();
             for (int i = 0; i < elementNamesList.Count; i++)
             {
                 string name = elementNamesList[i];
@@ -57,6 +58,22 @@ namespace PaperTracker
             }
         }
 
+        private void SetSelectMode()
+        {
+            if (onSelectMode)
+            {
+                btnSelect.BackColor = Color.MidnightBlue;
+                btnDelete.Visible = true;
+            }
+            else
+            {
+                btnSelect.BackColor = Color.Transparent;
+                btnDelete.Visible = false;
+            }
+
+            RenderElements();
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Hey you clicked me!");
@@ -64,7 +81,16 @@ namespace PaperTracker
 
         private void btnSelect_Click(object sender, EventArgs e)
         {
-            btnDelete.Visible = true;
+            if (onSelectMode)
+            {
+                onSelectMode = false;
+            }
+            else
+            {
+                onSelectMode = true;
+            }
+
+            SetSelectMode();
         }
     }
 }

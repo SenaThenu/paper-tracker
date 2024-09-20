@@ -61,7 +61,7 @@
             // 
             // btnSelect
             // 
-            btnSelect.CheckOnClick = true;
+            btnSelect.BackColor = Color.Transparent;
             btnSelect.DisplayStyle = ToolStripItemDisplayStyle.Image;
             btnSelect.Image = Properties.Resources.Multiselect_Fill;
             btnSelect.ImageTransparentColor = Color.Magenta;
