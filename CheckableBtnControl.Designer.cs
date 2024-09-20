@@ -42,7 +42,7 @@
             flowLayoutPanel.Controls.Add(button);
             flowLayoutPanel.Location = new Point(0, 0);
             flowLayoutPanel.Name = "flowLayoutPanel";
-            flowLayoutPanel.Size = new Size(152, 36);
+            flowLayoutPanel.Size = new Size(80, 56);
             flowLayoutPanel.TabIndex = 0;
             // 
             // checkBox
@@ -51,19 +51,26 @@
             checkBox.AutoSize = true;
             checkBox.Location = new Point(3, 3);
             checkBox.Name = "checkBox";
-            checkBox.Size = new Size(18, 30);
+            checkBox.Size = new Size(18, 50);
             checkBox.TabIndex = 0;
             checkBox.UseVisualStyleBackColor = true;
             // 
             // button
             // 
             button.AutoSize = true;
+            button.BackColor = Color.Black;
+            button.Cursor = Cursors.Hand;
+            button.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button.ForeColor = SystemColors.Control;
             button.Location = new Point(27, 3);
+            button.MinimumSize = new Size(50, 50);
             button.Name = "button";
-            button.Size = new Size(122, 30);
+            button.Padding = new Padding(5);
+            button.Size = new Size(50, 50);
             button.TabIndex = 1;
-            button.Text = "Sample Subject";
-            button.UseVisualStyleBackColor = true;
+            button.TextImageRelation = TextImageRelation.ImageBeforeText;
+            button.UseVisualStyleBackColor = false;
+            button.Click += button_Click;
             // 
             // checkableBtnItem
             // 
@@ -74,7 +81,7 @@
             BackColor = Color.Transparent;
             Controls.Add(flowLayoutPanel);
             Name = "checkableBtnItem";
-            Size = new Size(155, 39);
+            Size = new Size(83, 59);
             flowLayoutPanel.ResumeLayout(false);
             flowLayoutPanel.PerformLayout();
             ResumeLayout(false);

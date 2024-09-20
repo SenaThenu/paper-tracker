@@ -12,9 +12,49 @@ namespace PaperTracker
 {
     public partial class BaseForm : Form
     {
-        public BaseForm()
+        private List<string> elementNamesList;
+        private List<bool>? todoStates; // used for todo buttons (true -> todo, false -> done) [used when frmType is "todo"]
+        private string formType;
+        private bool onSelectMode = false;
+
+        public BaseForm(List<string> elementNames, string frmType = "default", List<bool>? elementTodoStates = null)
         {
+            elementNamesList = elementNames;
+            todoStates = elementTodoStates;
+            formType = frmType;
+
             InitializeComponent();
+            RenderElements();
+        }
+
+        private void RenderElements()
+        {
+            for (int i = 0; i < elementNamesList.Count; i++)
+            {
+                string name = elementNamesList[i];
+
+                if (formType == "todo")
+                {
+                    checkableBtnItem checkBtn = new checkableBtnItem(name, onSelectMode);
+                    flowItemsLayoutPanel.Controls.Add(checkBtn);
+                }
+                else
+                {
+                    if (todoStates != null)
+                    {
+                        checkableBtnItem checkBtn;
+                        if (todoStates[i])
+                        {
+                            checkBtn = new checkableBtnItem(name, onSelectMode, "todo");
+                        }
+                        else
+                        {
+                            checkBtn = new checkableBtnItem(name, onSelectMode, "todo", "done");
+                        }
+                        flowItemsLayoutPanel.Controls.Add(checkBtn);
+                    }
+                }
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
