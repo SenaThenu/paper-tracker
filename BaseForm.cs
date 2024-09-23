@@ -2,26 +2,39 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace PaperTracker
 {
     public partial class BaseForm : Form
     {
-        private List<string> elementNamesList;
-        private List<bool>? todoStates; // used for todo buttons (true -> todo, false -> done) [used when frmType is "todo"]
-        private string formType;
+        private object elementsList;
+        private string formType; // either default or todo
+        private List<int> selectedItemsIndices;
         private bool onSelectMode = false;
 
-        public BaseForm(List<string> frmElementNames, string frmType = "default", List<bool>? frmElementTodoStates = null)
+        public BaseForm(object frmElementList)
         {
-            elementNamesList = frmElementNames;
-            todoStates = frmElementTodoStates;
-            formType = frmType;
+            if (frmElementList is Dictionary<string, bool>)
+            {
+                formType = "todo";
+            }
+            else if (frmElementList is List<Subject> || frmElementList is List<Topic>)
+            {
+                formType = "default";
+            }
+            else
+            {
+                throw new Exception("Form elements must be one of these types: Dictionary<string, bool>, List<Subject>, List<Topic>!");
+            }
+
+            elementsList = frmElementList;
 
             InitializeComponent();
             RenderElements();
@@ -30,30 +43,54 @@ namespace PaperTracker
         private void RenderElements()
         {
             flowItemsLayoutPanel.Controls.Clear();
-            for (int i = 0; i < elementNamesList.Count; i++)
-            {
-                string name = elementNamesList[i];
 
-                if (formType == "todo")
+            if (formType == "todo")
+            {
+                foreach (var element in (Dictionary<string, bool>)elementsList)
                 {
-                    if (todoStates != null)
+                    checkableBtnItem checkBtn;
+                    if (element.Value)
                     {
-                        checkableBtnItem checkBtn;
-                        if (todoStates[i])
+                        checkBtn = new checkableBtnItem(element.Key, onSelectMode, "todo", "done");
+                    }
+                    else
+                    {
+                        checkBtn = new checkableBtnItem(element.Key, onSelectMode, "todo");
+                    }
+                    flowItemsLayoutPanel.Controls.Add(checkBtn);
+                }
+            }
+            else
+            {
+                if (elementsList is List<Subject>)
+                {
+                    foreach (var subject in (List<Subject>)elementsList)
+                    {
+                        checkableBtnItem checkBtn = new checkableBtnItem(subject.name, onSelectMode);
+
+                        void onClickHandler(object sender, EventArgs e)
                         {
-                            checkBtn = new checkableBtnItem(name, onSelectMode, "todo");
+                            OpenNewForm(subject);
                         }
-                        else
-                        {
-                            checkBtn = new checkableBtnItem(name, onSelectMode, "todo", "done");
-                        }
+                        checkBtn.OnBtnClick += onClickHandler;
+
                         flowItemsLayoutPanel.Controls.Add(checkBtn);
                     }
                 }
                 else
                 {
-                    checkableBtnItem checkBtn = new checkableBtnItem(name, onSelectMode);
-                    flowItemsLayoutPanel.Controls.Add(checkBtn);
+                    foreach (var topic in (List<Topic>)elementsList)
+                    {
+                        checkableBtnItem checkBtn = new checkableBtnItem(topic.name, onSelectMode);
+
+                        void onClickHandler(object sender, EventArgs e)
+                        {
+                            OpenNewForm(topic);
+                        }
+                        checkBtn.OnBtnClick += onClickHandler;
+
+                        flowItemsLayoutPanel.Controls.Add(checkBtn);
+                    }
                 }
             }
         }
@@ -72,6 +109,18 @@ namespace PaperTracker
             }
 
             RenderElements();
+        }
+
+        private void OpenNewForm(Topic topicElement)
+        {
+            BaseForm subForm = new BaseForm(topicElement.topicPapers);
+            subForm.Show();
+        }
+
+        private void OpenNewForm(Subject subjectElement)
+        {
+            BaseForm subform = new BaseForm(subjectElement.topics);
+            subform.Show();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
