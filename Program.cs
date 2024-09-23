@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace PaperTracker
 {
     internal static class Program
@@ -12,10 +14,46 @@ namespace PaperTracker
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            List<string> subjects = new List<string> { "IT", "Math", "Physics" };
-            Console.WriteLine("bro pls work!");
+            List<Subject> subjects = LoadData();
 
-            Application.Run(new BaseForm(subjects));
+            // Application.Run(new BaseForm(subjects));
+        }
+
+        public static List<Subject> LoadData()
+        {
+            string dataPath = @"data\subjects.json";
+            if (File.Exists(dataPath))
+            {
+                try
+                {
+                    string jsonString = File.ReadAllText(dataPath);
+                    List<Subject> loadedSubjects = JsonSerializer.Deserialize<List<Subject>>(jsonString);
+                    if (loadedSubjects != null)
+                    {
+                        return loadedSubjects;
+                    }
+                    else
+                    {
+                        return new List<Subject>();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("Error loading the file: " + ex.Message);
+                    return new List<Subject>();
+                }
+            }
+            else
+            {
+                return new List<Subject>();
+            }
+        }
+
+        public static void SaveData(List<Subject> subjectsToSave)
+        {
+            string dataPath = @"data\subjects.json";
+            string jsonString = JsonSerializer.Serialize(subjectsToSave);
+            File.WriteAllText(dataPath, jsonString);
         }
     }
 }
