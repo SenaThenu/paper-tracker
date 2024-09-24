@@ -141,13 +141,13 @@ namespace PaperTracker
 
         private void OpenNewForm(Topic topicElement)
         {
-            BaseForm subForm = new BaseForm(topicElement.topicPapers);
+            BaseForm subForm = new BaseForm(topicElement.topicPapers, saveCallback);
             subForm.Show();
         }
 
         private void OpenNewForm(Subject subjectElement)
         {
-            BaseForm subform = new BaseForm(subjectElement.topics);
+            BaseForm subform = new BaseForm(subjectElement.topics, saveCallback);
             subform.Show();
         }
 

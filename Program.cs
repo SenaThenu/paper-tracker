@@ -17,7 +17,7 @@ namespace PaperTracker
             List<Subject> subjects = LoadData();
             void saveCallback() { SaveData(subjects); }
 
-            Application.Run(new BaseForm(subjects), saveCallback);
+            Application.Run(new BaseForm(subjects, saveCallback));
         }
 
         public static List<Subject> LoadData()
