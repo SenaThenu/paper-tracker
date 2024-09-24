@@ -8,13 +8,17 @@ namespace PaperTracker
 {
     internal class Subject
     {
-        public string name;
-        public List<Topic> topics = new();
+        public string name { get; set; }
+        public List<Topic> topics { get; set; }
 
         public Subject(string subName)
         {
             name = subName;
+            topics = new();
         }
+
+        // when loading from JSON, a parameterless constructor is required:
+        public Subject() { }
 
         public void AddTopic(Topic newTopic)
         {

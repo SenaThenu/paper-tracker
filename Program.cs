@@ -53,7 +53,18 @@ namespace PaperTracker
         public static void SaveData(List<Subject> subjectsToSave)
         {
             string dataPath = @"data\subjects.json";
-            string jsonString = JsonSerializer.Serialize(subjectsToSave);
+
+            // Ensure the directory exists
+            string directory = Path.GetDirectoryName(dataPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            string jsonString = JsonSerializer.Serialize(subjectsToSave, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
             File.WriteAllText(dataPath, jsonString);
         }
     }

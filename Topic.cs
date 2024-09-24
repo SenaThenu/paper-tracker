@@ -8,13 +8,17 @@ namespace PaperTracker
 {
     internal class Topic
     {
-        public string name;
-        public Dictionary<string, bool> topicPapers = new(); // key -> paperName & value -> did or not (bool)
+        public string name { get; set; }
+        public Dictionary<string, bool> topicPapers { get; set; } // key -> paperName & value -> did or not (bool)
 
         public Topic(string tName)
         {
             name = tName;
+            topicPapers = new();
         }
+
+        // when loading from JSON, a parameterless constructor is required:
+        public Topic() { }
 
         public void addTopicPaper(string paperName)
         {

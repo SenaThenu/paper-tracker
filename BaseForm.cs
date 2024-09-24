@@ -16,28 +16,38 @@ namespace PaperTracker
     {
         public delegate void saveCallbackType();
         private saveCallbackType saveCallback;
-        private object elementsList;
-        private string formType; // either default or todo
+
+        private string formType; // either subject, topic or todo
+        // frmElments are one of the following datatypes:
+        List<Subject> subjects;
+        List<Topic> topics;
+        Dictionary<string, bool> todoDict;
+
         private List<int> selectedItemsIndices;
         private bool onSelectMode = false;
 
-        public BaseForm(object frmElementList, saveCallbackType frmSaveCallback)
+        public BaseForm(object frmElements, saveCallbackType frmSaveCallback)
         {
-            if (frmElementList is Dictionary<string, bool>)
+            if (frmElements is Dictionary<string, bool>)
             {
                 formType = "todo";
+                todoDict = (Dictionary<string, bool>)frmElements;
             }
-            else if (frmElementList is List<Subject> || frmElementList is List<Topic>)
+            else if (frmElements is List<Subject>)
             {
-                formType = "default";
+                formType = "subject";
+                subjects = (List<Subject>)frmElements;
+            }
+            else if (frmElements is List<Topic>)
+            {
+                formType = "topic";
+                topics = (List<Topic>)frmElements;
             }
             else
             {
                 throw new Exception("Form elements must be one of these types: Dictionary<string, bool>, List<Subject>, List<Topic>!");
             }
 
-            // storing the constructor parameters as attributes
-            elementsList = frmElementList;
             saveCallback = frmSaveCallback;
 
             InitializeComponent();
@@ -50,7 +60,7 @@ namespace PaperTracker
 
             if (formType == "todo")
             {
-                foreach (var element in (Dictionary<string, bool>)elementsList)
+                foreach (var element in todoDict)
                 {
                     void onClickHandler(object sender, EventArgs e)
                     {
@@ -72,37 +82,34 @@ namespace PaperTracker
                     flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
+            else if (formType == "subject")
+            {
+                foreach (var subject in subjects)
+                {
+                    checkableBtnItem checkBtn = new checkableBtnItem(subject.name, onSelectMode);
+
+                    void onClickHandler(object sender, EventArgs e)
+                    {
+                        OpenNewForm(subject);
+                    }
+                    checkBtn.OnBtnClick += onClickHandler;
+
+                    flowItemsLayoutPanel.Controls.Add(checkBtn);
+                }
+            }
             else
             {
-                if (elementsList is List<Subject>)
+                foreach (var topic in topics)
                 {
-                    foreach (var subject in (List<Subject>)elementsList)
+                    checkableBtnItem checkBtn = new checkableBtnItem(topic.name, onSelectMode);
+
+                    void onClickHandler(object sender, EventArgs e)
                     {
-                        checkableBtnItem checkBtn = new checkableBtnItem(subject.name, onSelectMode);
-
-                        void onClickHandler(object sender, EventArgs e)
-                        {
-                            OpenNewForm(subject);
-                        }
-                        checkBtn.OnBtnClick += onClickHandler;
-
-                        flowItemsLayoutPanel.Controls.Add(checkBtn);
+                        OpenNewForm(topic);
                     }
-                }
-                else
-                {
-                    foreach (var topic in (List<Topic>)elementsList)
-                    {
-                        checkableBtnItem checkBtn = new checkableBtnItem(topic.name, onSelectMode);
+                    checkBtn.OnBtnClick += onClickHandler;
 
-                        void onClickHandler(object sender, EventArgs e)
-                        {
-                            OpenNewForm(topic);
-                        }
-                        checkBtn.OnBtnClick += onClickHandler;
-
-                        flowItemsLayoutPanel.Controls.Add(checkBtn);
-                    }
+                    flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
         }
@@ -125,14 +132,13 @@ namespace PaperTracker
 
         private void TodoChangeHandler(string todoElementName, bool wasTodo)
         {
-            var elementsDict = (Dictionary<string, bool>)elementsList;
             if (wasTodo)
             {
-                elementsDict[todoElementName] = true;
+                todoDict[todoElementName] = true;
             }
             else
             {
-                elementsDict[todoElementName] = false;
+                todoDict[todoElementName] = false;
             }
 
             saveCallback();
@@ -142,19 +148,45 @@ namespace PaperTracker
         private void OpenNewForm(Topic topicElement)
         {
             BaseForm subForm = new BaseForm(topicElement.topicPapers, saveCallback);
+            subForm.Text = $"{topicElement.name} (Topic) - Paper Tracker";
             subForm.Show();
         }
 
         private void OpenNewForm(Subject subjectElement)
         {
-            BaseForm subform = new BaseForm(subjectElement.topics, saveCallback);
-            subform.Show();
+            BaseForm subForm = new BaseForm(subjectElement.topics, saveCallback);
+            subForm.Text = $"{subjectElement.name} (Subject) - Paper Tracker";
+            subForm.Show();
+        }
+
+        private void AddNewElement(string name)
+        {
+            if (formType == "todo")
+            {
+                todoDict[name] = false;
+            }
+            else if (formType == "subject")
+            {
+                subjects.Add(new Subject(name));
+            }
+            else
+            {
+                topics.Add(new Topic(name));
+            }
+            saveCallback();
+            RenderElements();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            NameEntryForm enterNameForm = new NameEntryForm();
-            enterNameForm.ShowDialog();
+            using (NameEntryForm nameForm = new NameEntryForm())
+            {
+                if (nameForm.ShowDialog() == DialogResult.OK)
+                {
+                    string enteredName = nameForm.enteredName;
+                    AddNewElement(enteredName);
+                }
+            }
         }
 
         private void btnSelect_Click(object sender, EventArgs e)

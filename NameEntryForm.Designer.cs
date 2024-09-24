@@ -76,8 +76,9 @@
             btnSubmit.Name = "btnSubmit";
             btnSubmit.Size = new Size(316, 29);
             btnSubmit.TabIndex = 1;
-            btnSubmit.Text = "Enter";
+            btnSubmit.Text = "Submit";
             btnSubmit.UseVisualStyleBackColor = true;
+            btnSubmit.Click += btnSubmit_Click;
             // 
             // NameEntryForm
             // 

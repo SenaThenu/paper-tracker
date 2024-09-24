@@ -12,9 +12,18 @@ namespace PaperTracker
 {
     public partial class NameEntryForm : Form
     {
+        public string enteredName { get; private set; }
+
         public NameEntryForm()
         {
             InitializeComponent();
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            enteredName = txtNameInput.Text;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }
