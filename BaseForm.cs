@@ -14,12 +14,14 @@ namespace PaperTracker
 {
     public partial class BaseForm : Form
     {
+        public delegate void saveCallbackType();
+        private saveCallbackType saveCallback;
         private object elementsList;
         private string formType; // either default or todo
         private List<int> selectedItemsIndices;
         private bool onSelectMode = false;
 
-        public BaseForm(object frmElementList)
+        public BaseForm(object frmElementList, saveCallbackType frmSaveCallback)
         {
             if (frmElementList is Dictionary<string, bool>)
             {
@@ -34,7 +36,9 @@ namespace PaperTracker
                 throw new Exception("Form elements must be one of these types: Dictionary<string, bool>, List<Subject>, List<Topic>!");
             }
 
+            // storing the constructor parameters as attributes
             elementsList = frmElementList;
+            saveCallback = frmSaveCallback;
 
             InitializeComponent();
             RenderElements();
@@ -48,7 +52,12 @@ namespace PaperTracker
             {
                 foreach (var element in (Dictionary<string, bool>)elementsList)
                 {
+                    void onClickHandler(object sender, EventArgs e)
+                    {
+                        TodoChangeHandler(element.Key, !element.Value);
+                    }
                     checkableBtnItem checkBtn;
+
                     if (element.Value)
                     {
                         checkBtn = new checkableBtnItem(element.Key, onSelectMode, "todo", "done");
@@ -57,6 +66,9 @@ namespace PaperTracker
                     {
                         checkBtn = new checkableBtnItem(element.Key, onSelectMode, "todo");
                     }
+
+                    checkBtn.OnBtnClick += onClickHandler;
+
                     flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
@@ -108,6 +120,22 @@ namespace PaperTracker
                 btnDelete.Visible = false;
             }
 
+            RenderElements();
+        }
+
+        private void TodoChangeHandler(string todoElementName, bool wasTodo)
+        {
+            var elementsDict = (Dictionary<string, bool>)elementsList;
+            if (wasTodo)
+            {
+                elementsDict[todoElementName] = true;
+            }
+            else
+            {
+                elementsDict[todoElementName] = false;
+            }
+
+            saveCallback();
             RenderElements();
         }
 
