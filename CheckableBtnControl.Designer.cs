@@ -54,7 +54,6 @@
             checkBox.Size = new Size(18, 50);
             checkBox.TabIndex = 0;
             checkBox.UseVisualStyleBackColor = true;
-            checkBox.CheckedChanged += checkBox_CheckedChanged;
             // 
             // button
             // 

@@ -153,7 +153,8 @@ namespace PaperTracker
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Hey you clicked me!");
+            NameEntryForm enterNameForm = new NameEntryForm();
+            enterNameForm.ShowDialog();
         }
 
         private void btnSelect_Click(object sender, EventArgs e)
