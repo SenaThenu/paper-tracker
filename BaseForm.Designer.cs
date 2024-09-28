@@ -56,7 +56,7 @@
             btnAdd.ImageTransparentColor = Color.Magenta;
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(34, 34);
-            btnAdd.Text = "Add";
+            btnAdd.Text = "Add (A)";
             btnAdd.Click += btnAdd_Click;
             // 
             // btnSelect
@@ -67,7 +67,7 @@
             btnSelect.ImageTransparentColor = Color.Magenta;
             btnSelect.Name = "btnSelect";
             btnSelect.Size = new Size(34, 34);
-            btnSelect.Text = "Select";
+            btnSelect.Text = "Select (S)";
             btnSelect.Click += btnSelect_Click;
             // 
             // btnDelete
@@ -77,7 +77,7 @@
             btnDelete.ImageTransparentColor = Color.Magenta;
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(34, 34);
-            btnDelete.Text = "Delete";
+            btnDelete.Text = "Delete (D)";
             btnDelete.Visible = false;
             btnDelete.Click += btnDelete_Click;
             // 
@@ -104,9 +104,11 @@
             Controls.Add(flowItemsLayoutPanel);
             Controls.Add(toolStrip);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
             MinimumSize = new Size(400, 250);
             Name = "BaseForm";
             Text = "Paper Tracker";
+            KeyDown += BaseForm_KeyDown;
             toolStrip.ResumeLayout(false);
             toolStrip.PerformLayout();
             ResumeLayout(false);

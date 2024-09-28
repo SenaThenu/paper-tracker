@@ -19,11 +19,29 @@ namespace PaperTracker
             InitializeComponent();
         }
 
-        private void btnSubmit_Click(object sender, EventArgs e)
+        private void getEnteredName()
         {
             enteredName = txtNameInput.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            getEnteredName();
+        }
+
+        private void txtNameInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                getEnteredName();
+            }
+
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }

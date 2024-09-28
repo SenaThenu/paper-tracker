@@ -281,5 +281,26 @@ namespace PaperTracker
             saveCallback();
             RenderElements();
         }
+
+        private void BaseForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.A)
+            {
+                btnAdd.PerformClick();
+                e.Handled = true; // Prevent default action
+            }
+
+            if (e.KeyCode == Keys.S)
+            {
+                btnSelect.PerformClick();
+                e.Handled = true;
+            }
+
+            if (e.KeyCode == Keys.D)
+            {
+                btnDelete.PerformClick();
+                e.Handled = true;
+            }
+        }
     }
 }
