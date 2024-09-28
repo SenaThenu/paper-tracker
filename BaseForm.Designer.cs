@@ -79,6 +79,7 @@
             btnDelete.Size = new Size(34, 34);
             btnDelete.Text = "Delete";
             btnDelete.Visible = false;
+            btnDelete.Click += btnDelete_Click;
             // 
             // flowItemsLayoutPanel
             // 
