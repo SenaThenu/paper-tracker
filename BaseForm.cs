@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,7 +24,8 @@ namespace PaperTracker
         List<Topic> topics;
         Dictionary<string, bool> todoDict;
 
-        private List<int> selectedItemsIndices;
+        private List<int> selectedItemsIndices = [];
+        private List<string> selectedTodoNames = [];
         private bool onSelectMode = false;
 
         public BaseForm(object frmElements, saveCallbackType frmSaveCallback)
@@ -62,10 +64,6 @@ namespace PaperTracker
             {
                 foreach (var element in todoDict)
                 {
-                    void onClickHandler(object sender, EventArgs e)
-                    {
-                        TodoChangeHandler(element.Key, !element.Value);
-                    }
                     checkableBtnItem checkBtn;
 
                     if (element.Value)
@@ -77,15 +75,34 @@ namespace PaperTracker
                         checkBtn = new checkableBtnItem(element.Key, onSelectMode, "todo");
                     }
 
+                    void onClickHandler(object sender, EventArgs e)
+                    {
+                        TodoChangeHandler(element.Key, !element.Value);
+                    }
                     checkBtn.OnBtnClick += onClickHandler;
+
+                    void todoSelectedStateHandler(object sender, EventArgs e)
+                    {
+                        bool exists = selectedTodoNames.Contains(element.Key);
+                        if (exists)
+                        {
+                            selectedTodoNames.Remove(element.Key);
+                        }
+                        else
+                        {
+                            selectedTodoNames.Add(element.Key);
+                        }
+                    }
+                    checkBtn.OnSelectedStateChanged += todoSelectedStateHandler;
 
                     flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
             else if (formType == "subject")
             {
-                foreach (var subject in subjects)
+                for (var i = 0; i < subjects.Count; i++)
                 {
+                    Subject subject = subjects[i];
                     checkableBtnItem checkBtn = new checkableBtnItem(subject.name, onSelectMode);
 
                     void onClickHandler(object sender, EventArgs e)
@@ -93,14 +110,16 @@ namespace PaperTracker
                         OpenNewForm(subject);
                     }
                     checkBtn.OnBtnClick += onClickHandler;
+                    checkBtn.OnSelectedStateChanged += GetNormalSelectedStateHandler(i);
 
                     flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
             else
             {
-                foreach (var topic in topics)
+                for (var i = 0; i < topics.Count; i++)
                 {
+                    Topic topic = topics[i];
                     checkableBtnItem checkBtn = new checkableBtnItem(topic.name, onSelectMode);
 
                     void onClickHandler(object sender, EventArgs e)
@@ -108,14 +127,41 @@ namespace PaperTracker
                         OpenNewForm(topic);
                     }
                     checkBtn.OnBtnClick += onClickHandler;
+                    checkBtn.OnSelectedStateChanged += GetNormalSelectedStateHandler(i);
 
                     flowItemsLayoutPanel.Controls.Add(checkBtn);
                 }
             }
         }
 
+        private EventHandler GetNormalSelectedStateHandler(int index)
+        {
+            // this is common for topic and subject forms (handling their selected state changes)
+            // for todo forms a different handler is defined in RenderElements()
+            void SelectedStateChangeHandler(object sender, EventArgs e)
+            {
+                bool exists = selectedItemsIndices.Contains(index);
+                if (exists)
+                {
+                    selectedItemsIndices.Remove(index);
+                }
+                else
+                {
+                    selectedItemsIndices.Add(index);
+                }
+            }
+            return SelectedStateChangeHandler;
+        }
+
+        private void ClearSelected()
+        {
+            selectedItemsIndices = [];
+            selectedTodoNames = [];
+        }
+
         private void SetSelectMode()
         {
+            ClearSelected();
             if (onSelectMode)
             {
                 btnSelect.BackColor = Color.MidnightBlue;
@@ -201,6 +247,60 @@ namespace PaperTracker
             }
 
             SetSelectMode();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (formType == "todo")
+            {
+                foreach (string todoName in selectedTodoNames)
+                {
+                    todoDict.Remove(todoName);
+                }
+            }
+            else
+            {
+                int nDeleted = 0; // used to deviate the value as items are removed
+                selectedItemsIndices.Sort();
+
+                foreach (int selectedIndex in selectedItemsIndices)
+                {
+                    if (formType == "subject")
+                    {
+                        subjects.RemoveAt(selectedIndex - nDeleted);
+                    }
+                    else
+                    {
+                        topics.RemoveAt(selectedIndex - nDeleted);
+                    }
+                    nDeleted += 1;
+                }
+            }
+
+            ClearSelected();
+            saveCallback();
+            RenderElements();
+        }
+
+        private void BaseForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.A)
+            {
+                btnAdd.PerformClick();
+                e.Handled = true; // Prevent default action
+            }
+
+            if (e.KeyCode == Keys.S)
+            {
+                btnSelect.PerformClick();
+                e.Handled = true;
+            }
+
+            if (e.KeyCode == Keys.D)
+            {
+                btnDelete.PerformClick();
+                e.Handled = true;
+            }
         }
     }
 }

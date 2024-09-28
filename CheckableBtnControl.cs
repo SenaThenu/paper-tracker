@@ -13,6 +13,7 @@ namespace PaperTracker
     public partial class checkableBtnItem : UserControl
     {
         public event EventHandler? OnBtnClick;
+        public event EventHandler? OnSelectedStateChanged;
 
         public checkableBtnItem(string label, bool visibleCheckmark = false, string btnType = "default", string? toDoBtnState = null)
         {
@@ -36,6 +37,11 @@ namespace PaperTracker
         private void button_Click(object sender, EventArgs e)
         {
             OnBtnClick?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            OnSelectedStateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
