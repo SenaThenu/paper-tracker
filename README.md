@@ -4,7 +4,7 @@
 <div align="center">
   <!-- PROJECT LOGO -->
   <a href="https://github.com/SenaThenu/paper-tracker">
-    <img src="https://github.com/SenaThenu/paper-tracker/blob/main/Assets/Logo.png" alt="Logo" height="250">
+    <img src="https://github.com/SenaThenu/paper-tracker/blob/main/Assets/Logo.png" alt="Logo" height="100">
   </a>
 
   <!-- PROJECT TITLE -->
@@ -48,7 +48,11 @@
 
 ## Project Preview 📖
 
-Replace `paper-tracker`
+
+
+https://github.com/user-attachments/assets/bf0b9e04-760e-473f-9d1b-1ff9db0f43e0
+
+
 
 <p align="right"><a href="#readme-top">Jump to Top<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand gestures/Index Pointing Up.png" alt="Pointing Up" width="25" height="25" /></a></p>
 
