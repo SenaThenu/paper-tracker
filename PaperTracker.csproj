@@ -6,10 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Assets\Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\Inter-VariableFont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
